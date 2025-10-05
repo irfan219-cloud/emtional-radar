@@ -1,0 +1,27 @@
+{
+  "name": "customer-feedback-analyzer",
+  "version": "1.0.0",
+  "description": "A comprehensive system for analyzing customer feedback from multiple platforms with real-time dashboard and AI-powered responses",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && node clean-server.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "start": "npm run start --workspace=backend",
+    "test": "npm run test --workspace=backend && npm run test --workspace=frontend",
+    "lint": "npm run lint --workspace=backend && npm run lint --workspace=frontend",
+    "auto": "node auto-start.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

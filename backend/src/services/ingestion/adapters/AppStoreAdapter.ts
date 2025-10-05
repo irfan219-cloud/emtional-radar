@@ -1,0 +1,388 @@
+import { BasePlatformAdapter } from '../BasePlatformAdapter';
+import { 
+  AppStoreConfig, 
+  RawFeedbackItem, 
+  SearchOptions, 
+  UserFeedbackOptions 
+} from '@/types/ingestion';
+import { FeedbackData } from '@/types/feedback';
+
+/**
+ * App Store Mock Adapter
+ * 
+ * This is a mock implementation that generates realistic App Store review data
+ * for development and testing purposes. In production, this would integrate
+ * with the actual App Store Connect API or scraping service.
+ */
+export class AppStoreAdapter extends BasePlatformAdapter {
+  private config: AppStoreConfig;
+  private mockReviews: MockAppStoreReview[] = [];
+
+  constructor(config: AppStoreConfig) {
+    super('appstore', config);
+    this.config = config;
+    this.generateMockData();
+  }
+
+  /**
+   * Setup HTTP client (mock implementation)
+   */
+  protected async setupHttpClient(): Promise<void> {
+    // Mock setup - no actual HTTP client needed
+    console.log('🎭 App Store mock adapter setup complete');
+  }
+
+  /**
+   * Mock authentication
+   */
+  async authenticate(): Promise<boolean> {
+    // Simulate authentication delay
+    await this.sleep(300);
+    this.isAuthenticated = true;
+    console.log('✅ App Store mock authentication successful');
+    return true;
+  }
+
+  /**
+   * Get health check endpoint (mock)
+   */
+  protected getHealthCheckEndpoint(): string {
+    return '/mock/health';
+  }
+
+  /**
+   * Search for reviews (mock implementation)
+   */
+  async searchFeedback(query: string, options: SearchOptions = {}): Promise<RawFeedbackItem[]> {
+    console.log(`🔍 App Store mock search: "${query}"`);
+    
+    // Simulate API delay
+    await this.sleep(Math.random() * 800 + 400);
+
+    // Filter mock reviews based on query
+    let filteredReviews = this.mockReviews.filter(review => 
+      review.title.toLowerCase().includes(query.toLowerCase()) ||
+      review.content.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // Apply date filtering
+    if (options.since) {
+      filteredReviews = filteredReviews.filter(review => 
+        new Date(review.date) >= options.since!
+      );
+    }
+
+    if (options.until) {
+      filteredReviews = filteredReviews.filter(review => 
+        new Date(review.date) <= options.until!
+      );
+    }
+
+    // Apply limit
+    if (options.maxResults) {
+      filteredReviews = filteredReviews.slice(0, options.maxResults);
+    }
+
+    // Sort results
+    if (options.sortBy === 'recent') {
+      filteredReviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } else if (options.sortBy === 'popular') {
+      filteredReviews.sort((a, b) => b.helpful_count - a.helpful_count);
+    }
+
+    return filteredReviews.map(review => this.transformMockReview(review));
+  }
+
+  /**
+   * Get user reviews (mock implementation)
+   */
+  async getUserFeedback(userId: string, options: UserFeedbackOptions = {}): Promise<RawFeedbackItem[]> {
+    console.log(`👤 App Store mock user feedback: ${userId}`);
+    
+    // Simulate API delay
+    await this.sleep(Math.random() * 600 + 200);
+
+    // Filter reviews by user
+    let userReviews = this.mockReviews.filter(review => review.user_name === userId);
+
+    // Apply date filtering
+    if (options.since) {
+      userReviews = userReviews.filter(review => 
+        new Date(review.date) >= options.since!
+      );
+    }
+
+    if (options.until) {
+      userReviews = userReviews.filter(review => 
+        new Date(review.date) <= options.until!
+      );
+    }
+
+    // Apply limit
+    if (options.maxResults) {
+      userReviews = userReviews.slice(0, options.maxResults);
+    }
+
+    return userReviews.map(review => this.transformMockReview(review));
+  }
+
+  /**
+   * Transform mock review to RawFeedbackItem
+   */
+  private transformMockReview(review: MockAppStoreReview): RawFeedbackItem {
+    return {
+      id: review.id,
+      platform: 'appstore',
+      content: `${review.title}\n\n${review.content}`,
+      author: {
+        id: review.user_name,
+        username: review.user_name,
+        displayName: review.user_name,
+        followerCount: 0,
+        verified: false
+      },
+      engagement: {
+        likes: review.helpful_count,
+        shares: 0,
+        comments: 0,
+        views: 0
+      },
+      timestamps: {
+        created: new Date(review.date)
+      },
+      metadata: {
+        rating: review.rating,
+        title: review.title,
+        app_version: review.version,
+        device: review.device,
+        country: review.country,
+        helpful_count: review.helpful_count,
+        app_id: this.config.appId,
+        review_id: review.id
+      },
+      urls: [],
+      mentions: [],
+      hashtags: []
+    };
+  }
+
+  /**
+   * Transform RawFeedbackItem to FeedbackData
+   */
+  transformToFeedback(rawItem: RawFeedbackItem): FeedbackData {
+    return {
+      id: '', // Will be generated by database
+      platform: 'appstore',
+      external_id: rawItem.id,
+      content: rawItem.content,
+      author: {
+        username: rawItem.author.username,
+        followerCount: rawItem.author.followerCount,
+        verified: rawItem.author.verified
+      },
+      engagement: {
+        likes: rawItem.engagement.likes,
+        shares: rawItem.engagement.shares,
+        comments: rawItem.engagement.comments
+      },
+      posted_at: rawItem.timestamps.created,
+      ingested_at: new Date(),
+      metadata: rawItem.metadata
+    };
+  }
+
+  /**
+   * Generate realistic mock data
+   */
+  private generateMockData(): void {
+    const sampleReviews = [
+      {
+        rating: 5,
+        title: "Love this app!",
+        content: "This app has completely changed how I manage my daily tasks. The interface is intuitive and the features are exactly what I needed. Worth every penny!",
+        sentiment: 'positive'
+      },
+      {
+        rating: 1,
+        title: "App keeps crashing",
+        content: "Downloaded this app yesterday and it crashes every time I try to open it. Tried restarting my phone, reinstalling, nothing works. Complete waste of money.",
+        sentiment: 'negative'
+      },
+      {
+        rating: 3,
+        title: "Decent but has issues",
+        content: "The app works for basic functionality but there are some bugs that need fixing. Sometimes it's slow to load and the sync feature doesn't always work.",
+        sentiment: 'neutral'
+      },
+      {
+        rating: 4,
+        title: "Great app with minor flaws",
+        content: "Really enjoying this app overall. The main features work great and it's saved me a lot of time. Only complaint is that the notifications can be a bit buggy sometimes.",
+        sentiment: 'positive'
+      },
+      {
+        rating: 2,
+        title: "Not worth the price",
+        content: "Expected much more for what I paid. The free version of similar apps offers more features. Customer support is also very slow to respond.",
+        sentiment: 'negative'
+      },
+      {
+        rating: 5,
+        title: "Perfect for my needs",
+        content: "Exactly what I was looking for! The developers clearly put a lot of thought into the user experience. Regular updates and new features keep it fresh.",
+        sentiment: 'positive'
+      },
+      {
+        rating: 1,
+        title: "Terrible update ruined everything",
+        content: "This app used to be great but the latest update completely broke it. Features that worked perfectly now don't work at all. Please fix this!",
+        sentiment: 'negative'
+      },
+      {
+        rating: 4,
+        title: "Solid app, recommend it",
+        content: "Been using this for a few months now and it's been reliable. Does what it promises and the interface is clean. Could use a few more customization options.",
+        sentiment: 'positive'
+      }
+    ];
+
+    const appVersions = ['2.1.0', '2.0.5', '1.9.8', '2.1.1', '2.0.3'];
+    const devices = ['iPhone 15 Pro', 'iPhone 14', 'iPhone 13', 'iPad Pro', 'iPhone 12', 'iPhone SE'];
+    const countries = ['US', 'UK', 'CA', 'AU', 'DE', 'FR', 'JP', 'BR'];
+    const userNames = [
+      'AppLover123', 'TechReviewer', 'MobileUser99', 'DigitalNomad', 'ProductivityGuru',
+      'AppCritic', 'SmartphoneUser', 'TabletFan', 'MobilePro', 'AppExplorer',
+      'TechEnthusiast', 'DigitalUser', 'AppAddict', 'MobileExpert', 'GadgetReviewer'
+    ];
+
+    for (let i = 0; i < 60; i++) {
+      const sample = sampleReviews[i % sampleReviews.length];
+      const createdDate = new Date(Date.now() - Math.random() * 120 * 24 * 60 * 60 * 1000); // Last 120 days
+      
+      this.mockReviews.push({
+        id: `as_${i + 1}`,
+        rating: sample.rating,
+        title: sample.title,
+        content: sample.content,
+        date: createdDate.toISOString(),
+        version: appVersions[Math.floor(Math.random() * appVersions.length)],
+        device: devices[Math.floor(Math.random() * devices.length)],
+        country: countries[Math.floor(Math.random() * countries.length)],
+        user_name: userNames[Math.floor(Math.random() * userNames.length)],
+        helpful_count: Math.floor(Math.random() * 15)
+      });
+    }
+
+    console.log(`🎭 Generated ${this.mockReviews.length} mock App Store reviews`);
+  }
+
+  /**
+   * Get reviews by rating
+   */
+  async getReviewsByRating(rating: number, options: { limit?: number } = {}): Promise<RawFeedbackItem[]> {
+    console.log(`⭐ App Store mock reviews by rating: ${rating}`);
+    
+    await this.sleep(Math.random() * 500 + 150);
+
+    let filteredReviews = this.mockReviews.filter(review => review.rating === rating);
+
+    if (options.limit) {
+      filteredReviews = filteredReviews.slice(0, options.limit);
+    }
+
+    return filteredReviews.map(review => this.transformMockReview(review));
+  }
+
+  /**
+   * Get reviews by app version
+   */
+  async getReviewsByVersion(version: string, options: { limit?: number } = {}): Promise<RawFeedbackItem[]> {
+    console.log(`📱 App Store mock reviews by version: ${version}`);
+    
+    await this.sleep(Math.random() * 400 + 100);
+
+    let filteredReviews = this.mockReviews.filter(review => review.version === version);
+
+    if (options.limit) {
+      filteredReviews = filteredReviews.slice(0, options.limit);
+    }
+
+    return filteredReviews.map(review => this.transformMockReview(review));
+  }
+
+  /**
+   * Get app statistics
+   */
+  async getAppStats(): Promise<{
+    total_reviews: number;
+    average_rating: number;
+    rating_distribution: Record<number, number>;
+    version_distribution: Record<string, number>;
+    country_distribution: Record<string, number>;
+  }> {
+    console.log(`📊 App Store mock app statistics`);
+    
+    await this.sleep(Math.random() * 300 + 50);
+
+    const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const versionDistribution: Record<string, number> = {};
+    const countryDistribution: Record<string, number> = {};
+    let totalRating = 0;
+
+    this.mockReviews.forEach(review => {
+      ratingDistribution[review.rating]++;
+      totalRating += review.rating;
+      
+      versionDistribution[review.version] = (versionDistribution[review.version] || 0) + 1;
+      countryDistribution[review.country] = (countryDistribution[review.country] || 0) + 1;
+    });
+
+    return {
+      total_reviews: this.mockReviews.length,
+      average_rating: this.mockReviews.length > 0 ? totalRating / this.mockReviews.length : 0,
+      rating_distribution: ratingDistribution,
+      version_distribution: versionDistribution,
+      country_distribution: countryDistribution
+    };
+  }
+
+  /**
+   * Get recent crash reports (mock)
+   */
+  async getCrashReports(options: { limit?: number; since?: Date } = {}): Promise<Array<{
+    version: string;
+    device: string;
+    crash_count: number;
+    last_occurrence: Date;
+  }>> {
+    console.log(`💥 App Store mock crash reports`);
+    
+    await this.sleep(Math.random() * 200 + 50);
+
+    // Generate mock crash data based on negative reviews
+    const crashReports = this.mockReviews
+      .filter(review => review.rating <= 2 && review.content.toLowerCase().includes('crash'))
+      .slice(0, options.limit || 10)
+      .map(review => ({
+        version: review.version,
+        device: review.device,
+        crash_count: Math.floor(Math.random() * 50) + 1,
+        last_occurrence: new Date(review.date)
+      }));
+
+    return crashReports;
+  }
+}
+
+interface MockAppStoreReview {
+  id: string;
+  rating: number;
+  title: string;
+  content: string;
+  date: string;
+  version: string;
+  device: string;
+  country: string;
+  user_name: string;
+  helpful_count: number;
+}

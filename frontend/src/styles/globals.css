@@ -1,0 +1,689 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+/* HACKATHON WINNER - NEURAL NETWORK INSPIRED DESIGN */
+:root {
+  /* Neural Network Color Palette */
+  --neural-dark: #0a0a0f;
+  --neural-darker: #050508;
+  --neural-surface: #1a1a2e;
+  --neural-surface-light: #16213e;
+  --neural-accent: #00d4ff;
+  --neural-accent-glow: #00d4ff40;
+  --neural-secondary: #ff6b6b;
+  --neural-success: #4ecdc4;
+  --neural-warning: #ffe66d;
+  --neural-purple: #a8e6cf;
+  --neural-pink: #ff8b94;
+  
+  /* Cyber Gradients */
+  --gradient-cyber: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-neural: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  --gradient-matrix: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+  --gradient-neon: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  --gradient-hologram: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 100%);
+  
+  /* Advanced Shadows & Glows */
+  --shadow-neural: 0 8px 32px rgba(0, 212, 255, 0.15);
+  --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.4);
+  --glow-neural: 0 0 30px rgba(0, 212, 255, 0.5);
+  --glow-matrix: 0 0 30px rgba(78, 205, 196, 0.5);
+  --glow-neon: 0 0 30px rgba(255, 107, 107, 0.5);
+}
+
+@layer base {
+  html {
+    @apply h-full;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--neural-dark);
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(78, 205, 196, 0.05) 0%, transparent 50%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Neural Network Background Animation */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: 
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: neural-grid 20s linear infinite;
+  }
+
+  @keyframes neural-grid {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+  }
+}
+
+@layer components {
+  /* HACKATHON WINNING COMPONENTS */
+  
+  /* Cyber Glass Cards */
+  .cyber-card {
+    background: rgba(26, 26, 46, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: var(--shadow-neural);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .cyber-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glow-neural);
+    border-color: rgba(0, 212, 255, 0.5);
+  }
+
+  .cyber-card:hover::before {
+    left: 100%;
+  }
+
+  /* Neural Network Cards */
+  .neural-card {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: var(--shadow-neural);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .neural-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gradient-neural);
+    opacity: 0.6;
+  }
+
+  .neural-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--glow-neural);
+  }
+
+  /* Matrix Cards */
+  .matrix-card {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(68, 160, 141, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(78, 205, 196, 0.3);
+    border-radius: 16px;
+    box-shadow: var(--glow-matrix);
+    transition: all 0.3s ease;
+  }
+
+  .matrix-card:hover {
+    box-shadow: 0 0 40px rgba(78, 205, 196, 0.8);
+    transform: translateY(-3px);
+  }
+
+  /* Neon Cards */
+  .neon-card {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 90, 36, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 16px;
+    box-shadow: var(--glow-neon);
+    transition: all 0.3s ease;
+  }
+
+  .neon-card:hover {
+    box-shadow: 0 0 40px rgba(255, 107, 107, 0.8);
+    transform: translateY(-3px);
+  }
+
+  /* Hologram Cards */
+  .hologram-card {
+    background: linear-gradient(135deg, rgba(168, 230, 207, 0.1) 0%, rgba(136, 216, 192, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 230, 207, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(168, 230, 207, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .hologram-card:hover {
+    box-shadow: 0 0 40px rgba(168, 230, 207, 0.8);
+    transform: translateY(-3px);
+  }
+
+  /* Cyber Buttons */
+  .btn-cyber {
+    background: var(--gradient-neural);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-neural);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-cyber:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-neural);
+  }
+
+  .btn-cyber::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-cyber:hover::before {
+    left: 100%;
+  }
+
+  .btn-matrix {
+    background: var(--gradient-matrix);
+    box-shadow: var(--glow-matrix);
+  }
+
+  .btn-matrix:hover {
+    box-shadow: 0 0 40px rgba(78, 205, 196, 0.8);
+  }
+
+  .btn-neon {
+    background: var(--gradient-neon);
+    box-shadow: var(--glow-neon);
+  }
+
+  .btn-neon:hover {
+    box-shadow: 0 0 40px rgba(255, 107, 107, 0.8);
+  }
+
+  .btn-hologram {
+    background: var(--gradient-hologram);
+    box-shadow: 0 0 30px rgba(168, 230, 207, 0.5);
+  }
+
+  .btn-hologram:hover {
+    box-shadow: 0 0 40px rgba(168, 230, 207, 0.8);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    padding: 14px 28px;
+    color: var(--neural-accent);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: var(--glow-neural);
+    transform: translateY(-2px);
+  }
+
+  /* Neural Input Fields */
+  .input-neural {
+    background: rgba(26, 26, 46, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #ffffff;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+    width: 100%;
+  }
+
+  .input-neural:focus {
+    border-color: var(--neural-accent);
+    box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+    transform: translateY(-2px);
+    background: rgba(26, 26, 46, 0.9);
+  }
+
+  .input-neural::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Status Indicators */
+  .status-neural {
+    background: var(--gradient-neural);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: var(--glow-neural);
+    animation: neural-pulse 2s infinite;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .status-neural::before {
+    content: '●';
+    font-size: 16px;
+    animation: neural-blink 1s infinite;
+  }
+
+  .status-warning {
+    background: var(--gradient-neon);
+    box-shadow: var(--glow-neon);
+  }
+
+  .status-success {
+    background: var(--gradient-matrix);
+    box-shadow: var(--glow-matrix);
+  }
+
+  .status-info {
+    background: var(--gradient-hologram);
+    box-shadow: 0 0 30px rgba(168, 230, 207, 0.5);
+  }
+
+  /* Sentiment Analysis Badges */
+  .sentiment-positive {
+    background: var(--gradient-matrix);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: var(--glow-matrix);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .sentiment-positive::before {
+    content: '↗';
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .sentiment-negative {
+    background: var(--gradient-neon);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: var(--glow-neon);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .sentiment-negative::before {
+    content: '↘';
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .sentiment-neutral {
+    background: var(--gradient-hologram);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 0 30px rgba(168, 230, 207, 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .sentiment-neutral::before {
+    content: '→';
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* Risk Level Indicators */
+  .risk-low {
+    background: var(--gradient-matrix);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .risk-low::before {
+    content: '◉';
+    color: #4ecdc4;
+    font-size: 12px;
+  }
+
+  .risk-medium {
+    background: linear-gradient(135deg, #ffe66d 0%, #ffcc02 100%);
+    color: #1a1a2e;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .risk-medium::before {
+    content: '◉';
+    color: #ff9500;
+    font-size: 12px;
+  }
+
+  .risk-high {
+    background: var(--gradient-neon);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: var(--glow-neon);
+    animation: neural-pulse 2s infinite;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .risk-high::before {
+    content: '◉';
+    color: #ff3838;
+    font-size: 12px;
+    animation: neural-blink 1s infinite;
+  }
+
+  .risk-viral {
+    background: linear-gradient(135deg, #ff0080 0%, #ff0040 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 0 30px rgba(255, 0, 128, 0.8);
+    animation: viral-pulse 1s infinite;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .risk-viral::before {
+    content: '⚡';
+    font-size: 14px;
+    animation: viral-flash 0.5s infinite;
+  }
+
+  /* Legacy Component Classes */
+  .btn-primary {
+    @apply btn-cyber;
+  }
+
+  .btn-secondary {
+    @apply btn-ghost;
+  }
+
+  .card {
+    @apply cyber-card p-6;
+  }
+
+  .input-field {
+    @apply input-neural;
+  }
+
+  /* Utility Classes */
+  .bg-primary {
+    background-color: var(--neural-dark);
+  }
+
+  .bg-secondary {
+    background-color: var(--neural-surface);
+  }
+
+  .bg-tertiary {
+    background-color: var(--neural-surface-light);
+  }
+
+  .text-primary {
+    color: #ffffff;
+  }
+
+  .text-secondary {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .border-primary {
+    border-color: rgba(0, 212, 255, 0.2);
+  }
+
+  .accent-primary {
+    color: var(--neural-accent);
+  }
+
+  /* Advanced Animations */
+  @keyframes neural-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+
+  @keyframes neural-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes viral-pulse {
+    0%, 100% { 
+      opacity: 1; 
+      transform: scale(1);
+      box-shadow: 0 0 30px rgba(255, 0, 128, 0.8);
+    }
+    50% { 
+      opacity: 0.9; 
+      transform: scale(1.1);
+      box-shadow: 0 0 50px rgba(255, 0, 128, 1);
+    }
+  }
+
+  @keyframes viral-flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @keyframes cyber-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes cyber-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes matrix-rain {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+
+  .animate-cyber-slide { animation: cyber-slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  .animate-cyber-fade { animation: cyber-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+  .animate-matrix-rain { animation: matrix-rain 3s linear infinite; }
+
+  /* Cyber Scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--neural-dark);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--gradient-neural);
+    border-radius: 10px;
+    border: 2px solid var(--neural-dark);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-matrix);
+  }
+
+  /* Data Visualization Elements */
+  .data-point {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--neural-accent);
+    box-shadow: var(--glow-neural);
+    animation: neural-pulse 2s infinite;
+  }
+
+  .connection-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neural-accent), transparent);
+    animation: data-flow 2s linear infinite;
+  }
+
+  @keyframes data-flow {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+  }
+
+  /* Hackathon Special Effects */
+  .hackathon-glow {
+    position: relative;
+  }
+
+  .hackathon-glow::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--gradient-neural);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hackathon-glow:hover::after {
+    opacity: 1;
+  }
+
+  /* Theme System */
+  .theme-cyber {
+    --primary-color: var(--neural-accent);
+    --secondary-color: var(--neural-secondary);
+    --success-color: var(--neural-success);
+    --warning-color: var(--neural-warning);
+  }
+
+  .theme-matrix {
+    --primary-color: var(--neural-success);
+    --secondary-color: var(--neural-accent);
+    --success-color: var(--neural-purple);
+    --warning-color: var(--neural-pink);
+  }
+
+  .theme-neon {
+    --primary-color: var(--neural-secondary);
+    --secondary-color: var(--neural-warning);
+    --success-color: var(--neural-accent);
+    --warning-color: var(--neural-purple);
+  }
+}
